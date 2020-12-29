@@ -2,12 +2,27 @@ from xml.dom import minidom
 
 
 def write_code(classes, type):
-    for k in range(len(classes.childNodes[j].childNodes)):
-        if classes.childNodes[j].childNodes[k].nodeName == type:
-            if type == "Attribute":
-                f.write(classes.childNodes[j].childNodes[k].attributes["Name"].value + ", ")
-            if type == "Operation":
-                f.write("\n\tdef " + classes.childNodes[j].childNodes[k].attributes["Name"].value + "():\n")
+    attributes = []
+    for j in range(len(classes.childNodes)):
+        for k in range(len(classes.childNodes[j].childNodes)):
+            if classes.childNodes[j].childNodes[k].nodeName == type:
+                if type == "Attribute":
+                    attributes.append(classes.childNodes[j].childNodes[k].attributes["Name"].value)
+                    f.write(classes.childNodes[j].childNodes[k].attributes["Name"].value + ", ")
+                if type == "Operation":
+                    f.write("\n\tdef " + classes.childNodes[j].childNodes[k].attributes["Name"].value + "():\n\t\t# "
+                                                                                                        "insert body "
+                                                                                                        "here\n")
+                    try:
+                        classes.childNodes[j].childNodes[k].attributes["ReturnType"]
+                        f.write("\t\treturn NotImplemented\n")
+                    except KeyError:
+                        NotImplemented
+                    if len(classes.childNodes[j].childNodes[k].childNodes) == 0:
+                        break
+                    for w in range(len(classes.childNodes[j].childNodes[k].childNodes)):
+                        if classes.childNodes[j].childNodes[k].childNodes[w].nodeName == "ReturnType":
+                            f.write("\t\treturn NotImplemented\n")
 
 
 def clean_classes(temp):
@@ -25,15 +40,14 @@ classes = clean_classes(classes)
 
 for i in range(len(classes)):
     f.write("\n\nclass " + classes[i].attributes['Name'].value + ":\n\tdef __init__(self, ")
-    for j in range(len(classes[i].childNodes)):
-        write_code(classes[i], "Attribute")
-        # for k in range(len(classes[i].childNodes[j].childNodes)):
-        #     if classes[i].childNodes[j].childNodes[k].nodeName == "Attribute":
-        #         # attributes.append(classes[i].childNodes[j].childNodes[k].attributes["Name"].value)
-        #         f.write(classes[i].childNodes[j].childNodes[k].attributes["Name"].value + ", ")
+    write_code(classes[i], "Attribute")
+    # for k in range(len(classes[i].childNodes[j].childNodes)):
+    #     if classes[i].childNodes[j].childNodes[k].nodeName == "Attribute":
+    #         # attributes.append(classes[i].childNodes[j].childNodes[k].attributes["Name"].value)
+    #         f.write(classes[i].childNodes[j].childNodes[k].attributes["Name"].value + ", ")
     f.write("):\n\t\t")
-    for j in range(len(classes[i].childNodes)):
-        write_code(classes[i], "Operation")
+
+    write_code(classes[i], "Operation")
     # if classes[i].childNodes[j].childNodes[k].nodeName == "Operation":
     #     operations.append(classes[i].childNodes[j].childNodes[k].attributes["Name"].value)
     #     if len(classes[i].childNodes[j].childNodes[k].childNodes) == 0:
