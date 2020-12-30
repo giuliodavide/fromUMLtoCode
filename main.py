@@ -1,73 +1,75 @@
 from xml.dom import minidom
 
 
-def write_code(classes, type):
-    attributes = []
-    for j in range(len(classes.childNodes)):
-        for k in range(len(classes.childNodes[j].childNodes)):
-            if classes.childNodes[j].childNodes[k].nodeName == type:
-                if type == "Attribute":
-                    attributes.append(classes.childNodes[j].childNodes[k].attributes["Name"].value)
-                    f.write(classes.childNodes[j].childNodes[k].attributes["Name"].value + ", ")
-                if type == "Operation":
-                    f.write("\n\tdef " + classes.childNodes[j].childNodes[k].attributes["Name"].value + "():\n\t\t# "
-                                                                                                        "insert body "
-                                                                                                        "here\n")
+def write_code(list, tag):
+    for j in range(len(list.childNodes)):
+        for k in range(len(list.childNodes[j].childNodes)):
+            if list.childNodes[j].childNodes[k].nodeName == tag:
+                if tag == "Attribute":
+                    f.write(list.childNodes[j].childNodes[k].attributes["Name"].value + ", ")
+                    attributes.append(list.childNodes[j].childNodes[k].attributes["Name"].value)
+                if tag == "Operation":
+                    f.write("\n\tdef " + list.childNodes[j].childNodes[k].attributes["Name"].value + "(self, ")
+                    for w in range(len(list.childNodes[j].childNodes[k].childNodes)):
+                        for z in range(len(list.childNodes[j].childNodes[k].childNodes[w].childNodes)):
+                            if list.childNodes[j].childNodes[k].childNodes[w].childNodes[z].nodeName == "Parameter":
+                                f.write(list.childNodes[j].childNodes[k].childNodes[w].childNodes[z].attributes["Name"].value + ", ")
+                    f.write("):\n\t\t# insert body here\n")
                     try:
-                        classes.childNodes[j].childNodes[k].attributes["ReturnType"]
+                        list.childNodes[j].childNodes[k].attributes["ReturnType"]
                         f.write("\t\treturn NotImplemented\n")
                     except KeyError:
                         NotImplemented
-                    if len(classes.childNodes[j].childNodes[k].childNodes) == 0:
+                    if len(list.childNodes[j].childNodes[k].childNodes) == 0:
                         break
-                    for w in range(len(classes.childNodes[j].childNodes[k].childNodes)):
-                        if classes.childNodes[j].childNodes[k].childNodes[w].nodeName == "ReturnType":
+                    for w in range(len(list.childNodes[j].childNodes[k].childNodes)):
+                        if list.childNodes[j].childNodes[k].childNodes[w].nodeName == "ReturnType":
                             f.write("\t\treturn NotImplemented\n")
 
 
-def clean_classes(temp):
-    temp_classes = []
-    for i in range(len(temp)):
-        if temp[i].parentNode.nodeName == "ModelChildren":
-            temp_classes.append(temp[i])
-    return temp_classes
+def extract(temp_var, tag):
+    temp = []
+    for index in range(len(temp_var)):
+        if temp_var[index].parentNode.nodeName == 'ModelChildren':
+            if tag == 'Class':
+                temp.append(temp_var[index])
+            if tag == 'Generalization':
+                temp.append((temp_var[index].attributes['From'].value, temp_var[index].attributes['To'].value))
+    return temp
 
 
-f = open("interface.py", "a")
-class_diagram = minidom.parse('case_use/class_diagram.xml')
+def verify(list):
+    for i in range(len(fromTo)):
+        if list.attributes["Id"].value == fromTo[i][1]:
+            return association(fromTo[i][0])
+    return ""
+
+
+def association(id):
+    for i in range(len(classes)):
+        if id == classes[i].attributes["Id"].value:
+            return classes[i].attributes["Name"].value
+    return "NotDefined"
+
+
+f = open("interface.py", "w")
+class_diagram = minidom.parse('case_use/class_diagram_3.xml')
 classes = class_diagram.getElementsByTagName('Class')
-classes = clean_classes(classes)
+classes = extract(classes, 'Class')
+attributes = []
+fromTo = class_diagram.getElementsByTagName('Generalization')
+fromTo = extract(fromTo, "Generalization")
 
 for i in range(len(classes)):
-    f.write("\n\nclass " + classes[i].attributes['Name'].value + ":\n\tdef __init__(self, ")
+    f.write("\n\nclass " + classes[i].attributes['Name'].value + "(" + verify(classes[i]) + ")" + ":\n\tdef __init__("
+                                                                                                  "self, ")
     write_code(classes[i], "Attribute")
-    # for k in range(len(classes[i].childNodes[j].childNodes)):
-    #     if classes[i].childNodes[j].childNodes[k].nodeName == "Attribute":
-    #         # attributes.append(classes[i].childNodes[j].childNodes[k].attributes["Name"].value)
-    #         f.write(classes[i].childNodes[j].childNodes[k].attributes["Name"].value + ", ")
-    f.write("):\n\t\t")
-
+    f.write("):\n")
+    if len(verify(classes[i])) > 0:
+        f.write("\t\tsuper().__init__()\n")
+    for j in range(len(attributes)):
+        f.write("\t\tself." + attributes[j] + " = " + attributes[j] + "\n")
+    attributes.clear()
     write_code(classes[i], "Operation")
-    # if classes[i].childNodes[j].childNodes[k].nodeName == "Operation":
-    #     operations.append(classes[i].childNodes[j].childNodes[k].attributes["Name"].value)
-    #     if len(classes[i].childNodes[j].childNodes[k].childNodes) == 0:
-    #         returning.append(False)
-    #     for w in range(len(classes[i].childNodes[j].childNodes[k].childNodes)):
-    #         if classes[i].childNodes[j].childNodes[k].childNodes[w].nodeName != "ReturnType":
-    #             returning.append((False, k))
-    #         else:
-    #             returning.append((True, k))
-
-    # for j in range(len(attributes)):
-    #     f.write(attributes[j] + ", ")
-    # f.write("):\n\t\t")
-    #
-    # for j in range(len(attributes)):
-    #     f.write("self." + attributes[j] + " = " + attributes[j] + "\n\t\t")
-    #
-    # for j in range(len(operations)):
-    #     f.write("\n\tdef " + operations[j] + "():\n")
-    #     if returning[k]:
-    #         f.write("\t\treturn NotImplemented\n")
 
 f.close()
