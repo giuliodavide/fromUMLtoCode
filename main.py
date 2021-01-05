@@ -60,6 +60,7 @@ ap.add_argument("-c", "--class", required=True,
 ap.add_argument("-o", "--output", required=False,
                 help="output path in which we want to save the code, you need to write the name.py", default="output/interface.py")
 args = vars(ap.parse_args())
+
 try:
     f = open(args["output"], "w")
 except FileNotFoundError:
@@ -71,6 +72,7 @@ except FileNotFoundError:
     os.makedirs(path)
 finally:
     f = open(args["output"], "w")
+
 class_diagram = minidom.parse(args["class"])
 classes = class_diagram.getElementsByTagName('Class')
 classes = extract(classes, 'Class')
