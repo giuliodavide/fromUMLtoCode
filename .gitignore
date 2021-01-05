@@ -286,3 +286,5 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/windows,pycharm,venv,python
 case_use/
 interface.py
+cmd-here.cmd
+output/

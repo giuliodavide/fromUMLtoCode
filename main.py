@@ -1,4 +1,6 @@
 from xml.dom import minidom
+import argparse
+import os
 
 
 def write_code(list, tag):
@@ -52,8 +54,24 @@ def association(id):
     return "NotDefined"
 
 
-f = open("interface.py", "w")
-class_diagram = minidom.parse('case_use/class_diagram_3.xml')
+ap = argparse.ArgumentParser()
+ap.add_argument("-c", "--class", required=True,
+                help="class diagram we want to traduce")
+ap.add_argument("-o", "--output", required=False,
+                help="output path in which we want to save the code, you need to write the name.py", default="output/interface.py")
+args = vars(ap.parse_args())
+try:
+    f = open(args["output"], "w")
+except FileNotFoundError:
+    _ = str(args["output"]).split("/")
+    _ = [_[index] for index in range(0, len(_) - 1)]
+    path = ""
+    for i in range(len(_)):
+        path += _[i] + "/"
+    os.makedirs(path)
+finally:
+    f = open(args["output"], "w")
+class_diagram = minidom.parse(args["class"])
 classes = class_diagram.getElementsByTagName('Class')
 classes = extract(classes, 'Class')
 attributes = []
