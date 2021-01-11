@@ -7,39 +7,52 @@ from utility import *
 ap = argparse.ArgumentParser()
 ap.add_argument("-c", "--class", required=True,
                 help="class diagram we want to traduce")
-ap.add_argument("-o", "--output", required=False,
-                help="output path in which we want to save the code, you need to write the name.py", default="output/interface.py")
+ap.add_argument("-obj", "--object", required=False,
+                help="required if you want also a main.py related to the class diagram", default=None)
 args = vars(ap.parse_args())
 
 try:
-    f = open(args["output"], "w")
+    output_class = open("output/class.py", "w")
 except FileNotFoundError:
-    _ = str(args["output"]).split("/")
-    _ = [_[index] for index in range(0, len(_) - 1)]
-    path = ""
-    for i in range(len(_)):
-        path += _[i] + "/"
-    os.makedirs(path)
+    os.mkdir("output")
 finally:
-    f = open(args["output"], "w")
+    output_class = open("output/class.py", "w")
+
+if args["object"] is not None:
+    try:
+        output_main = open("output/main.py", "w")
+    except FileNotFoundError:
+        os.mkdir("output")
+    finally:
+        output_main = open("output/main.py", "w")
 
 class_diagram = minidom.parse(args["class"])
+obj_diagram = minidom.parse(args["object"])
 classes = class_diagram.getElementsByTagName('Class')
 classes = extract(classes, 'Class')
+if args["object"] is not None:
+    instances = obj_diagram.getElementsByTagName('InstanceSpecification')
+    instances = extract(instances, 'InstanceSpecification')
 attributes = []
 fromTo = class_diagram.getElementsByTagName('Generalization')
 fromTo = extract(fromTo, "Generalization")
 
 for i in range(len(classes)):
-    f.write("\n\nclass " + classes[i].attributes['Name'].value + "(" + verify(i, fromTo, classes) + ")" + ":\n\tdef __init__("
+    output_class.write("\n\nclass " + classes[i].attributes['Name'].value + "(" + verify(i, fromTo, classes) + ")" + ":\n\tdef __init__("
                                                                                                   "self, ")
-    attributes = write_code(classes[i], "Attribute", f)
-    f.write("):\n")
+    attributes = write_code(classes[i], "Attribute", output_class)
+    output_class.write("):\n")
     if len(verify(i, fromTo, classes)) > 0:
-        f.write("\t\tsuper().__init__()\n")
+        output_class.write("\t\tsuper().__init__()\n")
     for j in range(len(attributes)):
-        f.write("\t\tself." + attributes[j] + " = " + attributes[j] + "\n")
+        output_class.write("\t\tself." + attributes[j] + " = " + attributes[j] + "\n")
     attributes.clear()
-    temp = write_code(classes[i], "Operation", f)
+    temp = write_code(classes[i], "Operation", output_class)
 
-f.close()
+output_class.close()
+
+if instances is not None:
+    for i in range(len(instances)):
+        output_main.write(instances[i].attributes['Name'].value + " = " + classof(instances[i]))
+
+output_main.close()

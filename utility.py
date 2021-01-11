@@ -29,7 +29,7 @@ def extract(temp_var, tag):
     temp = []
     for index in range(len(temp_var)):
         if temp_var[index].parentNode.nodeName == 'ModelChildren':
-            if tag == 'Class':
+            if tag == 'Class' or tag == 'InstanceSpecification':
                 temp.append(temp_var[index])
             if tag == 'Generalization':
                 temp.append((temp_var[index].attributes['From'].value, temp_var[index].attributes['To'].value))
@@ -48,3 +48,11 @@ def association(id, classes):
         if id == classes[i].attributes["Id"].value:
             return classes[i].attributes["Name"].value
     return "NotDefined"
+
+
+def classof(instance):
+    for i in range(len(instance.childNodes)):
+        if instance.childNodes[i] == "Classifiers":
+            for j in range(len(instance.childNodes[i].childNodes)):
+                if instance.childNodes[i].childNodes[j] == 'Class':
+                    return instance.childNodes[i].childNodes[j].attributes['Name'].value
