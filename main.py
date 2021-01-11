@@ -22,11 +22,10 @@ def write_code(list, tag):
                         f.write("\t\treturn NotImplemented\n")
                     except KeyError:
                         NotImplemented
-                    if len(list.childNodes[j].childNodes[k].childNodes) == 0:
-                        break
-                    for w in range(len(list.childNodes[j].childNodes[k].childNodes)):
-                        if list.childNodes[j].childNodes[k].childNodes[w].nodeName == "ReturnType":
-                            f.write("\t\treturn NotImplemented\n")
+                    if len(list.childNodes[j].childNodes[k].childNodes) != 0:
+                        for w in range(len(list.childNodes[j].childNodes[k].childNodes)):
+                            if list.childNodes[j].childNodes[k].childNodes[w].nodeName == "ReturnType":
+                                f.write("\t\treturn NotImplemented\n")
 
 
 def extract(temp_var, tag):
