@@ -21,6 +21,7 @@ def write_code(list, tag):
                         list.childNodes[j].childNodes[k].attributes["ReturnType"]
                         f.write("\t\treturn NotImplemented\n")
                     except KeyError:
+                        # here we don't want the program to do something
                         NotImplemented
                     if len(list.childNodes[j].childNodes[k].childNodes) == 0:
                         break

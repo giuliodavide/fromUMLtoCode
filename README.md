@@ -6,4 +6,5 @@ command:
 
 **python main.py -c/--class "path/to/file.xml" [-o/--output "path/to/code.py"]**
 
-The default value of the variable output is "/output/interface.py"
+The default value of the variable output is "/output/interface.py". Path with whitespace will cause problems.
+We suggest to copy the file in a path without whitespace.
