@@ -53,6 +53,6 @@ output_class.close()
 
 if instances is not None:
     for i in range(len(instances)):
-        output_main.write(instances[i].attributes['Name'].value + " = " + classof(instances[i]))
+        output_main.write(instances[i].attributes['Name'].value + " = " + classof(instances[i]) + "(" + ", ".join(valueof(instances[i])) + ")" + "\n")
 
 output_main.close()
