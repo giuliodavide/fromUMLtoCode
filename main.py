@@ -12,11 +12,11 @@ ap.add_argument("-obj", "--object", required=False,
 args = vars(ap.parse_args())
 
 try:
-    output_class = open("output/class.py", "w")
+    output_class = open("output/interface.py", "w")
 except FileNotFoundError:
     os.mkdir("output")
 finally:
-    output_class = open("output/class.py", "w")
+    output_class = open("output/interface.py", "w")
 
 if args["object"] is not None:
     try:
@@ -52,6 +52,7 @@ for i in range(len(classes)):
 output_class.close()
 
 if instances is not None:
+    output_main.write("from interface import *\n\n")
     for i in range(len(instances)):
         output_main.write(instances[i].attributes['Name'].value + " = " + classof(instances[i]) + "(" + ", ".join(valueof(instances[i])) + ")" + "\n")
 
