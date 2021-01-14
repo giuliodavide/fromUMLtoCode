@@ -50,7 +50,8 @@ if args["object"] is not None:
     obj_diagram = minidom.parse(args["object"])
     instances = obj_diagram.getElementsByTagName('InstanceSpecification')
     instances = extract(instances, 'InstanceSpecification')
-    output_main.write("from interface import *\n\n")
+    if args["class"] is not None:
+        output_main.write("from interface import *\n\n")
     for i in range(len(instances)):
         output_main.write(instances[i].attributes['Name'].value + " = " + classof(instances[i]) + "(" + ", ".join(
             valueof(instances[i])) + ")" + "\n")

@@ -4,7 +4,6 @@ Community Edition of the program itself.
 To run the script, open a cmd in the directory of the project and type the following
 command:
 
-**python main.py -c/--class "path/to/file.xml" [-o/--output "path/to/code.py"]**
+**python main.py [-c/--class "path/to/class.xml"] [-obj/--object "path/to/object.xml"]**
 
-The default value of the variable output is "/output/interface.py". Path with whitespace will cause problems.
-We suggest to copy the file in a path without whitespace.
+Path with whitespace will cause problems. We suggest to copy the file in a path without whitespace.
