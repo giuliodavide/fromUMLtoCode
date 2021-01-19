@@ -57,4 +57,10 @@ if args["object"] is not None:
             valueof(instances[i])) + ")" + "\n")
     output_main.close()
 
-print("Task ended well. You can find all the file you have asked for in /output folder.")
+if args["class"] is None and args["object"] is None:
+    try:
+        raise Exception()
+    except Exception:
+        print("Error: no value was inserted")
+else:
+    print("Task ended well. You can find all the file you have asked for in /output folder.")
