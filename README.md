@@ -14,13 +14,13 @@ In output you will have up to two files: main.py for the object diagram, interfa
 ## Features
 
 The script can detect:
-- Classes
-- Attributes
-- Operation
- - Parameters
- - Return
-- Relation of Generalization
-- Instantiation of a class
+[x] Classes
+[x] Attributes
+[x] Operation
+[x] Parameters
+[x] Return
+[x] Relation of Generalization
+[x] Instantiation of a class
 
 In the case you will specify all the arguments on the terminal, the main.py file in output will automatically import all the class in the interface.py file.
 
