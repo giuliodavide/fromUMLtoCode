@@ -7,7 +7,7 @@ This script returns an incomplete code of a diagram/object class _.xml_ exported
 
 To run the script, open a terminal in the directory of the project and type the following command:
 
-''' python main.py [-c/--class "path/to/class.xml"] [-obj/--object "path/to/object.xml"] '''
+``` python main.py [-c/--class "path/to/class.xml"] [-obj/--object "path/to/object.xml"] ```
 
 In output you will have up to two files: main.py for the object diagram, interface.py for the class diagram. It won't work if you don't specify at least one argument.
 
