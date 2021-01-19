@@ -1,6 +1,7 @@
 # fromUMLtoCode
 
 This script returns an incomplete code of a diagram/object class _.xml_ exported with Visual Paradigm. It has been tested with some working examples available on the Community Edition of the program itself. The output of the entire script will be a output/ folder which will have a main.py and an interface.py, based on the choices made by the user.
+This project won't be possible without the help of @lauraloperfido and @AlessandroSchiavo
 
 
 ## Usage
@@ -14,13 +15,13 @@ In output you will have up to two files: main.py for the object diagram, interfa
 ## Features
 
 The script can detect:
-[x] Classes
-[x] Attributes
-[x] Operation
-[x] Parameters
-[x] Return
-[x] Relation of Generalization
-[x] Instantiation of a class
+- [x] Classes
+- [x] Attributes
+- [x] Operation
+- [x] Parameters
+- [x] Return
+- [x] Relation of Generalization
+- [x] Instantiation of a class
 
 In the case you will specify all the arguments on the terminal, the main.py file in output will automatically import all the class in the interface.py file.
 
